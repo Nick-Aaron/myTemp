@@ -82,7 +82,12 @@ while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
+
             if event.type == KEYDOWN:
+                if event.key == ord('z'):
+                    reviseCheat = True
+                if event.key == ord('x'):
+                    slowCheat = True
                 if event.key == K_LEFT or event.key == ord('a'):
                     moveLeft = True
                     moveRight = False
@@ -97,6 +102,15 @@ while True:
                     moveUp = False
 
             if event.type == KEYUP:
+                if event.key == ord('z'):
+                    reviseCheat = False
+                    score = 0
+                if event.key == ord('x'):
+                    slowCheat = False
+                    score = 0
+                if event.key == K_ESCAPE:
+                    terminate()
+
                 if event.key == K_LEFT or event.key == ord('a'):
                     moveLeft = False
                 if event.key == K_RIGHT or event.key == ord('d'):
@@ -112,8 +126,28 @@ while True:
                 # If the mouse moves, move the player to where the cursor is.
                 playerRect.move_ip(event.pos[0] - playerRect.centerx, event.pos[1] - playerRect.centery)
                     
-# add new baddies at the top of the screen, if needed.
-if not reveriseCheat and not slowCheat:
-    baddieCounter += 1
+        # add new baddies at the top of the screen, if needed.
+        if not reviseCheat and not slowCheat:
+            baddieAddCounter += 1
+        if baddieAddCounter == ADDNEWBADDIERATE:
+            baddieAddCounter = 0
+            baddieSize = random.randint(BADDIEMINSIZE, BADDIEMAXSIZE)
+            newBaddie = {'rect':pygame.Rect(random.randint(0, WINDOWWIDTH - baddieSize), 0 - baddieSize, baddieSize, baddieSize)
+                         'speed':random.randint(BADDIEMINSIZE, BADDIEMAXSPEED)
+                         'serface':pygame.transform.scale(baddieImage, (baddieSize, baddieSize))
+                        }
 
-                
+        baddies.append(newBaddie)
+
+        # move the player around.
+        if moveLeft and playerRect.left > 0:
+            playerRect.move_ip(-1 * PLAYERMOVERATE, 0)
+        if moveRight and playerRect.left < WINDOWWIDTH:
+            playerRect.move_ip(PLAYERMOVERATE, 0)
+        if moveUp and playerRect.top > 0:
+            playerRect.move_ip(0, -1 * PLAYERMOVERATE)
+        if moveDown and playerRect.bottom < WINDOWHEIGHT:
+            playerRect.move_ip(0, PLAYERMOVERATE)
+
+        # move the mouse cursor to match the player
+        pygame.mouse.set_pos(playerRect.centerx, playerRect.centery)
