@@ -111,3 +111,9 @@ while True:
             if event.type == MOUSEMOTION:
                 # If the mouse moves, move the player to where the cursor is.
                 playerRect.move_ip(event.pos[0] - playerRect.centerx, event.pos[1] - playerRect.centery)
+                    
+# add new baddies at the top of the screen, if needed.
+if not reveriseCheat and not slowCheat:
+    baddieCounter += 1
+
+                
